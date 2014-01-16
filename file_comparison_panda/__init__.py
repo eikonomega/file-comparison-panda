@@ -21,7 +21,7 @@ test_file_two.csv::
     "dduck","Duck","Donald","donald.duck@disney.com","","maintain",""
 
 
->>> my_file_comparison = ZenFileComparison(
+>>> my_file_comparison = FileComparisonPanda(
         '/path/to/test_file_one.csv', '/path/to/test_file_two.csv')
 >>> my_file_comparison.compare_files()
 >>> my_file_comparison.matching_records
@@ -44,6 +44,6 @@ test_file_two.csv::
 
 """
 
-from file_comparison_panda import ZenFileComparison
+from file_comparison_panda import FileComparisonPanda
 
 __version__ = '0.1.0'

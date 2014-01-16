@@ -6,8 +6,10 @@ files.  The functionality of this module is currently limited to CSV files.
 
 import csv
 
+from file_comparison_exceptions import UnsupportedFileType
 
-class ZenFileComparison(object):
+
+class FileComparisonPanda(object):
     """
     Compares the data in two files and provides matching and unique
     records.
@@ -40,9 +42,11 @@ class ZenFileComparison(object):
             self._file_one = open(file_path_1, 'rU')
             self._file_two = open(file_path_2, 'rU')
         except IOError as error:
+            print error.strerror
+
             if error.errno == 2:
                 raise IOError(
-                    "One of the file paths provided to ZenFileComparison() is "
+                    "One of the file paths provided to FileComparisonPanda() is "
                     "invalid.  Verify that '{}' exists and is readable by "
                     "the user who is executing this program.".format(
                         error.filename
@@ -53,7 +57,7 @@ class ZenFileComparison(object):
 
         if not self._verify_acceptable_file_extensions(
                 [file_path_1, file_path_2], ['csv']):
-            raise NotImplementedError
+            raise UnsupportedFileType
 
     def unique_records(self):
         """

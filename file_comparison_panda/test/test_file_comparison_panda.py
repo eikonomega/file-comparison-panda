@@ -1,7 +1,10 @@
+import stat
 import os
 from unittest import TestCase
+import pytest
 
-from ..file_comparison_panda import ZenFileComparison
+from ..file_comparison_panda import FileComparisonPanda
+from ..file_comparison_exceptions import UnsupportedFileType
 
 
 class TestFileComparison(TestCase):
@@ -10,44 +13,48 @@ class TestFileComparison(TestCase):
 
     def test_constructor_with_invalid_file_types(self):
         """
-        Prove the ZenFileComparison().__init__() throws a NotImplementedError
-        exception while passed file paths that refer to non-supported
+        Prove the FileComparisonPanda().__init__() throws a NotImplementedError
+        exception when passed file paths that refer to non-supported
         file types.
 
         """
-        self.assertRaises(
-            NotImplementedError,
-            ZenFileComparison,
-            self.test_files_path + '/unsupported_file_1.usp',
-            self.test_files_path + '/unsupported_file_2.usp')
+        with pytest.raises(UnsupportedFileType):
+            FileComparisonPanda(
+                self.test_files_path + '/unsupported_file_1.usp',
+                self.test_files_path + '/unsupported_file_2.usp')
 
     def test_constructor_with_inaccessible_or_nonexistent_files(self):
         """
-        Prove the ZenFileComparison().__init__() throws an OSError
+        Prove the FileComparisonPanda().__init__() throws an OSError
         exception when passed file paths that refer to inaccessible
         or non-existent files.
 
         """
         self.assertRaises(
             IOError,
-            ZenFileComparison,
+            FileComparisonPanda,
             self.test_files_path + '/nonexistent_file_1.usp',
-            self.test_files_path + '/nonexistent_file_1.usp')
+            self.test_files_path + '/new_file.csv')
+
+        os.chmod(
+            self.test_files_path + '/inaccessible_file_1.csv', int('000', 8))
 
         self.assertRaises(
             IOError,
-            ZenFileComparison,
+            FileComparisonPanda,
             self.test_files_path + '/inaccessible_file_1.csv',
-            self.test_files_path + '/inaccessible_file_1.csv')
+            self.test_files_path + '/new_file.csv')
+        os.chmod(
+            self.test_files_path + '/inaccessible_file_1.csv', int('777', 8))
 
     def test_constructor(self):
         """
-        Prove that ZenFileComparison() returns a new ZenFileComparison
+        Prove that FileComparisonPanda() returns a new FileComparisonPanda
         object with the correct attributes when given valid
         arguments.
 
         """
-        file_comparison = ZenFileComparison(
+        file_comparison = FileComparisonPanda(
             self.test_files_path + '/old_file.csv',
             self.test_files_path + '/new_file.csv'
         )
@@ -59,7 +66,7 @@ class TestFileComparison(TestCase):
 
     def test_compare_files(self):
 
-        file_comparison = ZenFileComparison(
+        file_comparison = FileComparisonPanda(
             self.test_files_path + '/new_file.csv',
             self.test_files_path + '/old_file.csv'
         )

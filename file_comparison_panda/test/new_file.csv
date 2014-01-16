@@ -1,0 +1,4 @@
+"UserId","Last Name","First Name","Email","Password","User Type","Internal ID"
+"dduck","Duck","Donald","donald.duck@disney.com","","registered",""
+"mmouse1","Mouse","Minnie","minnie.mouse@disney.com","","registered",""
+"mmouse","Mouse","Mickey","mickey.mouse@disney.com","","maintain",""

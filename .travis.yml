@@ -1,0 +1,12 @@
+language: python
+python:
+- '2.7'
+install: pip install -r requirements.txt
+script: py.test
+deploy:
+  provider: pypi
+  user: eikonomega
+  password:
+    secure: O3ykqu94SAGAPDYJsYCvtSZQ2qRmagJbgiHJUXxODRa8nU3sYRpvP8ZKjTJWzLDJFBOUO6jYL627EMzWA6+9s/hXqBBDFgFZ3qM6+3hvaIG3DdvsgEipr/tbqVdOg8BpmUL4w1vB5Qyg+YLf2tvR4z3nXp4G6mJUyYl5E3Fts5o=
+  on:
+    repo: eikonomega/file_comparison_panda

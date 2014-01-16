@@ -4,7 +4,8 @@ from unittest import TestCase
 import pytest
 
 from ..file_comparison_panda import FileComparisonPanda
-from ..file_comparison_exceptions import UnsupportedFileType
+from ..file_comparison_exceptions import (
+    UnsupportedFileType, FileDoesNotExist, PermissionDeniedOnFile)
 
 
 class TestFileComparison(TestCase):
@@ -23,29 +24,33 @@ class TestFileComparison(TestCase):
                 self.test_files_path + '/unsupported_file_1.usp',
                 self.test_files_path + '/unsupported_file_2.usp')
 
-    def test_constructor_with_inaccessible_or_nonexistent_files(self):
+    def test_constructor_with_inaccessible_file(self):
         """
         Prove the FileComparisonPanda().__init__() throws an OSError
         exception when passed file paths that refer to inaccessible
         or non-existent files.
 
         """
-        self.assertRaises(
-            IOError,
-            FileComparisonPanda,
-            self.test_files_path + '/nonexistent_file_1.usp',
-            self.test_files_path + '/new_file.csv')
-
         os.chmod(
             self.test_files_path + '/inaccessible_file_1.csv', int('000', 8))
 
-        self.assertRaises(
-            IOError,
-            FileComparisonPanda,
-            self.test_files_path + '/inaccessible_file_1.csv',
-            self.test_files_path + '/new_file.csv')
+        with pytest.raises(PermissionDeniedOnFile):
+            FileComparisonPanda(
+                self.test_files_path + '/inaccessible_file_1.csv',
+                self.test_files_path + '/new_file.csv')
+
         os.chmod(
             self.test_files_path + '/inaccessible_file_1.csv', int('777', 8))
+
+    def test_constructor_with_nonexistent_file(self):
+        """
+        Prove the FileComparisonPanda().__init__() throws IOError
+        when given a path pointing to a non-existent file.
+        """
+        with pytest.raises(FileDoesNotExist):
+            FileComparisonPanda(
+                self.test_files_path + '/nonexistent_file_1.usp',
+                self.test_files_path + '/new_file.csv')
 
     def test_constructor(self):
         """

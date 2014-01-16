@@ -46,4 +46,4 @@ test_file_two.csv::
 
 from file_comparison_panda import FileComparisonPanda
 
-__version__ = '0.1.0'
+__version__ = '0.2.0'

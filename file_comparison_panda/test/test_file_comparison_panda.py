@@ -59,7 +59,7 @@ class TestFileComparison(TestCase):
             self.test_files_path + '/old_file.csv'
         )
 
-        file_comparison.compare_files()
+        file_comparison._compare_files()
 
         self.assertListEqual(
             [

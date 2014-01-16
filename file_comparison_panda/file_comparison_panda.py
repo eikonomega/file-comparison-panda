@@ -15,6 +15,29 @@ class FileComparisonPanda(object):
     Compares the data in two files and provides matching and unique
     records.
 
+    The way that I'm approaching this is to lazy load the files into
+    memory and form the file comparison only when one of the properties
+    are accessed.
+
+    This allows for clients to separate object instantiation from
+    file comparison... but is there any advantage to this for the client?
+
+    It is certainly not unreasonable that the file comparison would
+    happen immediately upon object instantiation...
+
+    I suppose that it could be surprising to a client to have the
+    comparison occur at attribute access.
+
+    Then again if all FileComparisonPanda does is provided a complex data
+    structure, it should perhaps just be a function.  That is a big
+    function though.
+
+    What if, instead, I made the file_one and file_two attributes also
+    properties?  This would allow this object to become a factory of
+    sorts.
+
+    Yes... let's try that.
+
     """
 
     def __init__(
@@ -60,28 +83,29 @@ class FileComparisonPanda(object):
                 [file_path_1, file_path_2], ['csv']):
             raise UnsupportedFileType
 
+    @property
     def unique_records(self):
         """
         Returns:
             A dict containing two elements ['_file_one', '_file_two'] each of
-            which are lists of unique records found during compare_files().
+            which are lists of unique records found during _compare_files().
 
         Raises:
-            AttributeError: When the method is called prior to compare_files().
+            AttributeError: When the method is called prior to _compare_files().
 
         """
-        if set(self._unique_records.keys()).difference(
-                ['file_one', 'file_two']):
-            raise AttributeError(
-                "The internal structure of self._matching_results is "
-                "not correct.  Run compare_files() first.")
+        if not self._unique_records:
+            self._compare_files()
         return self._unique_records
 
+    @property
     def matching_records(self):
         """
         A list of records that were found in both files.
 
         """
+        if not self._matching_records:
+            self._compare_files()
         return self._matching_records
 
     @staticmethod
@@ -102,7 +126,7 @@ class FileComparisonPanda(object):
             else:
                 return False
 
-    def compare_files(self):
+    def _compare_files(self):
         """
         Identify unique and matching records from self._file_one and
         self._file_two using various set operations.

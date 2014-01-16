@@ -52,23 +52,6 @@ class TestFileComparison(TestCase):
                 self.test_files_path + '/nonexistent_file_1.usp',
                 self.test_files_path + '/new_file.csv')
 
-    def test_constructor(self):
-        """
-        Prove that FileComparisonPanda() returns a new FileComparisonPanda
-        object with the correct attributes when given valid
-        arguments.
-
-        """
-        file_comparison = FileComparisonPanda(
-            self.test_files_path + '/old_file.csv',
-            self.test_files_path + '/new_file.csv'
-        )
-
-        self.assertIsInstance(file_comparison._file_one, file)
-        self.assertIsInstance(file_comparison._file_two, file)
-        self.assertIsInstance(file_comparison._matching_records, list)
-        self.assertIsInstance(file_comparison._unique_records, dict)
-
     def test_compare_files(self):
 
         file_comparison = FileComparisonPanda(

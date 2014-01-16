@@ -6,7 +6,7 @@ files.  The functionality of this module is currently limited to CSV files.
 
 import csv
 
-from file_comparison_exceptions import UnsupportedFileType
+from file_comparison_exceptions import UnsupportedFileType, FileDoesNotExist, PermissionDeniedOnFile
 
 
 class FileComparisonPanda(object):
@@ -42,18 +42,18 @@ class FileComparisonPanda(object):
             self._file_one = open(file_path_1, 'rU')
             self._file_two = open(file_path_2, 'rU')
         except IOError as error:
-            print error.strerror
-
             if error.errno == 2:
-                raise IOError(
-                    "One of the file paths provided to FileComparisonPanda() is "
-                    "invalid.  Verify that '{}' exists and is readable by "
-                    "the user who is executing this program.".format(
-                        error.filename
-                    )
-                )
-            else:
-                raise
+                raise FileDoesNotExist(
+                    "One of the file paths provided to FileComparisonPanda() "
+                    "is invalid.  Verify that '{}' exists".format(
+                        error.filename))
+            elif error.errno == 13:
+                raise PermissionDeniedOnFile(
+                    "One of the file paths provided to FileComparisonPanda() "
+                    "is not accessible.  Verify that '{}' is readable "
+                    "by the user running the program".format(
+                        error.filename))
+            raise
 
         if not self._verify_acceptable_file_extensions(
                 [file_path_1, file_path_2], ['csv']):

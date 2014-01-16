@@ -6,7 +6,8 @@ files.  The functionality of this module is currently limited to CSV files.
 
 import csv
 
-from file_comparison_exceptions import UnsupportedFileType, FileDoesNotExist, PermissionDeniedOnFile
+from file_comparison_exceptions import (
+    UnsupportedFileType, FileDoesNotExist, PermissionDeniedOnFile)
 
 
 class FileComparisonPanda(object):

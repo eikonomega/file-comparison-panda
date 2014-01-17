@@ -8,6 +8,7 @@ import csv
 
 from file_comparison_exceptions import (
     UnsupportedFileType, FileDoesNotExist, PermissionDeniedOnFile)
+from os import unsetenv
 
 
 SUPPORTED_FILE_TYPES = ['csv']
@@ -53,8 +54,13 @@ class FileComparisonPanda(object):
     def file_one(self, file_path):
         FileComparisonPanda._verify_acceptable_file_extensions(
                 [file_path], SUPPORTED_FILE_TYPES)
-        self._file_one = FileComparisonPanda._file(file_path)
+        FileComparisonPanda._verify_file_accessibility(file_path)
+        self._file_one = file_path
         self._reset_file_comparison_data()
+
+    @file_one.deleter
+    def file_one(self):
+        self._file_one = None
 
     @property
     def file_two(self):
@@ -64,8 +70,13 @@ class FileComparisonPanda(object):
     def file_two(self, file_path):
         FileComparisonPanda._verify_acceptable_file_extensions(
                 [file_path], SUPPORTED_FILE_TYPES)
-        self._file_two = FileComparisonPanda._file(file_path)
+        FileComparisonPanda._verify_file_accessibility(file_path)
+        self._file_two = file_path
         self._reset_file_comparison_data()
+
+    @file_two.deleter
+    def file_two(self):
+        self._file_two = None
 
     @staticmethod
     def _verify_acceptable_file_extensions(
@@ -87,9 +98,9 @@ class FileComparisonPanda(object):
                     "file types are supported: {}".format(SUPPORTED_FILE_TYPES))
 
     @staticmethod
-    def _file(file_path):
+    def _verify_file_accessibility(file_path):
         try:
-            open_file = open(file_path, 'rU')
+            file_being_verified = open(file_path, 'rU')
         except IOError as error:
             if error.errno == 2:
                 raise FileDoesNotExist(
@@ -104,12 +115,14 @@ class FileComparisonPanda(object):
                         error.filename))
             raise
         else:
-            open_file.close()
-            return open_file
+            file_being_verified.close()
 
     def _reset_file_comparison_data(self):
         self._unique_records = dict()
         self._matching_records = list()
+
+        # print self._unique_records
+        # print self._matching_records
 
     def _compare_files(self):
         """
@@ -118,10 +131,13 @@ class FileComparisonPanda(object):
 
         """
 
-        file_one_records = set(
-            FileComparisonPanda._load_file_into_memory(self._file_one))
-        file_two_records = set(
-            FileComparisonPanda._load_file_into_memory(self._file_two))
+        with open(self._file_one, 'rU') as file_one:
+            file_one_records = set(
+                FileComparisonPanda._load_file_into_memory(file_one))
+
+        with open(self._file_two, 'rU') as file_two:
+            file_two_records = set(
+                FileComparisonPanda._load_file_into_memory(file_two))
 
         self._matching_records.extend(
             file_one_records.intersection(file_two_records))

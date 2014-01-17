@@ -3,8 +3,7 @@
 
 Usage
 -----
-Assuming you have two files, test_file_one.csv & test_file_two.csv with
-the following content:
+Assuming you have the following three files:
 
 test_file_one.csv::
 
@@ -20,17 +19,24 @@ test_file_two.csv::
     "goofy","Goofy","N/A","goofy@disney.com","","maintain",""
     "dduck","Duck","Donald","donald.duck@disney.com","","maintain",""
 
+test_file_three.csv::
 
->>> my_file_comparison = FileComparisonPanda(
+    "UserId","Last Name","First Name","Email","Password","User Type","Internal ID"
+    "dduck","Duck","Donald","donald.duck@disney.com","","registered",""
+    "iman","Man","Iron","ironman@disney.com","","maintain",""
+    "camerica","America","Captain","captain.america@disney.com","","maintain",""
+
+
+>>> file_comparison_panda = FileComparisonPanda(
         '/path/to/test_file_one.csv', '/path/to/test_file_two.csv')
->>> my_file_comparison.compare_files()
->>> my_file_comparison.matching_records
+
+>>> file_comparison_panda.matching_records
 [
     ('UserId', 'Last Name', 'First Name', 'Email', 'Password', 'User Type', 'Internal ID'),
     ('mmouse', 'Mouse', 'Mickey', 'mickey.mouse@disney.com', '', 'maintain', '')
 ]
 
->>> my_file_comparison.unique_records
+>>> file_comparison_panda.unique_records
 {
     'file_two': [
         ('goofy', 'Goofy', 'N/A', 'goofy@disney.com', '', 'maintain', ''),
@@ -42,8 +48,28 @@ test_file_two.csv::
     ]
 }
 
+>>> file_comparison_panda.file_one = '/path/to/test_file_three.csv'
+>>> file_comparison_panda.matching_records
+[
+    ('dduck', 'Duck', 'Donald', 'donald.duck@disney.com', '', 'registered', ''),
+    ('UserId', 'Last Name', 'First Name', 'Email', 'Password', 'User Type', 'Internal ID')
+]
+
+>>> file_comparison_panda.unique_records
+{
+    'file_two': [
+        ('camerica', 'America', 'Captain', 'captain.america@disney.com', '', 'maintain', ''),
+        ('iman', 'Man', 'Iron', 'ironman@disney.com', '', 'maintain', '')
+    ],
+    'file_one': [
+        ('mmouse1', 'Mouse', 'Minnie', 'minnie.mouse@disney.com', '', 'registered', ''),
+        ('mmouse', 'Mouse', 'Mickey', 'mickey.mouse@disney.com', '', 'maintain', '')
+    ]
+}
+
+
 """
 
 from file_comparison_panda import FileComparisonPanda
 
-__version__ = '0.2.0'
+__version__ = '0.3.0'

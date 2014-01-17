@@ -86,3 +86,12 @@ class TestFileComparison(TestCase):
              'goofy@disney.com', '', 'maintain', ''),
             ('dduck', 'Duck', 'Donald',
              'donald.duck@disney.com', '', 'maintain', '')]
+
+    def test_switching_comparison_file(self):
+        file_comparison = FileComparisonPanda(
+            self.test_files_path + '/new_file.csv',
+            self.test_files_path + '/old_file.csv'
+        )
+
+        file_comparison.file_two = self.test_files_path + '/test_file_three.csv'
+

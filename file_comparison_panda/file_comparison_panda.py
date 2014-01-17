@@ -104,6 +104,7 @@ class FileComparisonPanda(object):
                         error.filename))
             raise
         else:
+            # open_file.close()
             return open_file
 
     def _reset_file_comparison_data(self):

@@ -51,11 +51,22 @@ class TestFileComparison(TestCase):
                 self.test_files_path + '/nonexistent_file_1.csv',
                 self.test_files_path + '/new_file.csv')
 
-    def test__compare_files(self):
+    def test_matching_records_getter(self):
+        file_comparison = FileComparisonPanda(
+            self.test_files_path + '/new_file.csv',
+            self.test_files_path + '/old_file.csv'
+        )
+
+        assert file_comparison.matching_records == [
+            ('UserId', 'Last Name', 'First Name',
+             'Email', 'Password', 'User Type', 'Internal ID'),
+            ('mmouse', 'Mouse', 'Mickey',
+             'mickey.mouse@disney.com', '', 'maintain', '')]
+
+    def test_unique_records_getter(self):
         """
-        Prove that FileComparisonPanda._compare_files property
-        sets the values of the unique_records and matching_records
-        properties.
+        Prove that FileComparisonPanda.unique_records property
+        returns the unique records for file_one and file_two.
 
         """
 
@@ -75,9 +86,3 @@ class TestFileComparison(TestCase):
              'goofy@disney.com', '', 'maintain', ''),
             ('dduck', 'Duck', 'Donald',
              'donald.duck@disney.com', '', 'maintain', '')]
-
-        assert file_comparison.matching_records == [
-            ('UserId', 'Last Name', 'First Name',
-             'Email', 'Password', 'User Type', 'Internal ID'),
-            ('mmouse', 'Mouse', 'Mickey',
-             'mickey.mouse@disney.com', '', 'maintain', '')]

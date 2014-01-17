@@ -1,5 +1,5 @@
 """
-**ZenFileComparison provides easy comparisons of file contents.**
+**file-comparison-panda provides easy comparisons of csv file contents.**
 
 Usage
 -----

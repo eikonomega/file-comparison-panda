@@ -8,14 +8,13 @@ from ..file_comparison_exceptions import (
 
 
 class TestFileComparison(TestCase):
-    def setUp(self):
-        self.test_files_path = os.path.dirname(__file__)
+    test_files_path = os.path.dirname(__file__)
 
     def test_constructor_with_invalid_file_types(self):
         """
-        Prove the FileComparisonPanda().__init__() throws a NotImplementedError
-        exception when passed file paths that refer to non-supported
-        file types.
+        Prove the FileComparisonPanda.__init__() throws
+        UnsupportFileType when passed a file paths that refers to
+        a non-supported file types.
 
         """
         with pytest.raises(UnsupportedFileType):
@@ -25,9 +24,9 @@ class TestFileComparison(TestCase):
 
     def test_constructor_with_inaccessible_file(self):
         """
-        Prove the FileComparisonPanda().__init__() throws an OSError
-        exception when passed file paths that refer to inaccessible
-        or non-existent files.
+        Prove the FileComparisonPanda.__init__() throws
+        PermissionDeniedOnFile when passed a file path that refers
+        to an inaccessible file.
 
         """
         os.chmod(
@@ -43,8 +42,9 @@ class TestFileComparison(TestCase):
 
     def test_constructor_with_nonexistent_file(self):
         """
-        Prove the FileComparisonPanda().__init__() throws IOError
-        when given a path pointing to a non-existent file.
+        Prove the FileComparisonPanda.__init__() throws
+        FileDoesNotExist when passed a file path that refers
+        to a nonexistent file.
         """
         with pytest.raises(FileDoesNotExist):
             FileComparisonPanda(
@@ -52,6 +52,12 @@ class TestFileComparison(TestCase):
                 self.test_files_path + '/new_file.csv')
 
     def test_compare_files(self):
+        """
+        Prove that FileComparisonPanda._compare_files property
+        sets the values of the unique_records and matching_records
+        properties.
+
+        """
 
         file_comparison = FileComparisonPanda(
             self.test_files_path + '/new_file.csv',

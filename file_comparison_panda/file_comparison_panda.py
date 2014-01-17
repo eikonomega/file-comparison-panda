@@ -10,33 +10,13 @@ from file_comparison_exceptions import (
     UnsupportedFileType, FileDoesNotExist, PermissionDeniedOnFile)
 
 
+SUPPORTED_FILE_TYPES = ['csv']
+
+
 class FileComparisonPanda(object):
     """
     Compares the data in two files and provides matching and unique
     records.
-
-    The way that I'm approaching this is to lazy load the files into
-    memory and form the file comparison only when one of the properties
-    are accessed.
-
-    This allows for clients to separate object instantiation from
-    file comparison... but is there any advantage to this for the client?
-
-    It is certainly not unreasonable that the file comparison would
-    happen immediately upon object instantiation...
-
-    I suppose that it could be surprising to a client to have the
-    comparison occur at attribute access.
-
-    Then again if all FileComparisonPanda does is provided a complex data
-    structure, it should perhaps just be a function.  That is a big
-    function though.
-
-    What if, instead, I made the file_one and file_two attributes also
-    properties?  This would allow this object to become a factory of
-    sorts.
-
-    Yes... let's try that.
 
     """
 
@@ -62,51 +42,30 @@ class FileComparisonPanda(object):
         self._unique_records = dict()
         self._matching_records = list()
 
-        try:
-            self._file_one = open(file_path_1, 'rU')
-            self._file_two = open(file_path_2, 'rU')
-        except IOError as error:
-            if error.errno == 2:
-                raise FileDoesNotExist(
-                    "One of the file paths provided to FileComparisonPanda() "
-                    "is invalid.  Verify that '{}' exists".format(
-                        error.filename))
-            elif error.errno == 13:
-                raise PermissionDeniedOnFile(
-                    "One of the file paths provided to FileComparisonPanda() "
-                    "is not accessible.  Verify that '{}' is readable "
-                    "by the user running the program".format(
-                        error.filename))
-            raise
-
-        if not self._verify_acceptable_file_extensions(
-                [file_path_1, file_path_2], ['csv']):
-            raise UnsupportedFileType
+        self.file_one = file_path_1
+        self.file_two = file_path_2
 
     @property
-    def unique_records(self):
-        """
-        Returns:
-            A dict containing two elements ['_file_one', '_file_two'] each of
-            which are lists of unique records found during _compare_files().
+    def file_one(self):
+        return self._file_one
 
-        Raises:
-            AttributeError: When the method is called prior to _compare_files().
-
-        """
-        if not self._unique_records:
-            self._compare_files()
-        return self._unique_records
+    @file_one.setter
+    def file_one(self, file_path):
+        FileComparisonPanda._verify_acceptable_file_extensions(
+                [file_path], SUPPORTED_FILE_TYPES)
+        self._file_one = FileComparisonPanda._file(file_path)
+        self._reset_file_comparison_data()
 
     @property
-    def matching_records(self):
-        """
-        A list of records that were found in both files.
+    def file_two(self):
+        return self._file_two
 
-        """
-        if not self._matching_records:
-            self._compare_files()
-        return self._matching_records
+    @file_two.setter
+    def file_two(self, file_path):
+        FileComparisonPanda._verify_acceptable_file_extensions(
+                [file_path], SUPPORTED_FILE_TYPES)
+        self._file_two = FileComparisonPanda._file(file_path)
+        self._reset_file_comparison_data()
 
     @staticmethod
     def _verify_acceptable_file_extensions(
@@ -121,21 +80,47 @@ class FileComparisonPanda(object):
         for filename in list_of_filenames:
             filename_parts = filename.partition('.')
 
-            if filename_parts[2] in list_of_extensions:
-                return True
-            else:
-                return False
+            if filename_parts[2] not in list_of_extensions:
+                raise UnsupportedFileType(
+                    "One of the file paths provided to FileComparisonPanda() "
+                    "references an unsupported file type.  The following "
+                    "file types are supported: {}".format(SUPPORTED_FILE_TYPES))
+
+    @staticmethod
+    def _file(file_path):
+        try:
+            open_file = open(file_path, 'rU')
+        except IOError as error:
+            if error.errno == 2:
+                raise FileDoesNotExist(
+                    "One of the file paths provided to FileComparisonPanda() "
+                    "is invalid.  Verify that '{}' exists".format(
+                        error.filename))
+            elif error.errno == 13:
+                raise PermissionDeniedOnFile(
+                    "One of the file paths provided to FileComparisonPanda() "
+                    "is not accessible.  Verify that '{}' is readable "
+                    "by the user running the program".format(
+                        error.filename))
+            raise
+        else:
+            return open_file
+
+    def _reset_file_comparison_data(self):
+        self._unique_records = dict()
+        self._matching_records = list()
 
     def _compare_files(self):
         """
         Identify unique and matching records from self._file_one and
-        self._file_two using various set operations.
+        self.file_two using various set operations.
 
         """
 
-        # Obtain in-memory lists of file contents.
-        file_one_records = set(self._load_file_into_memory(self._file_one))
-        file_two_records = set(self._load_file_into_memory(self._file_two))
+        file_one_records = set(
+            FileComparisonPanda._load_file_into_memory(self._file_one))
+        file_two_records = set(
+            FileComparisonPanda._load_file_into_memory(self._file_two))
 
         self._matching_records.extend(
             file_one_records.intersection(file_two_records))
@@ -159,3 +144,28 @@ class FileComparisonPanda(object):
         csv_reader = csv.reader(file_object)
         records = [tuple(record) for record in csv_reader]
         return records
+
+    @property
+    def unique_records(self):
+        """
+        Returns:
+            A dict containing two elements ['_file_one', 'file_two'] each of
+            which are lists of unique records found during _compare_files().
+
+        Raises:
+            AttributeError: When the method is called prior to _compare_files().
+
+        """
+        if not self._unique_records:
+            self._compare_files()
+        return self._unique_records
+
+    @property
+    def matching_records(self):
+        """
+        A list of records that were found in both files.
+
+        """
+        if not self._matching_records:
+            self._compare_files()
+        return self._matching_records

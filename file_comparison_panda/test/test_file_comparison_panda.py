@@ -51,7 +51,7 @@ class TestFileComparison(TestCase):
                 self.test_files_path + '/nonexistent_file_1.csv',
                 self.test_files_path + '/new_file.csv')
 
-    def test_compare_files(self):
+    def test__compare_files(self):
         """
         Prove that FileComparisonPanda._compare_files property
         sets the values of the unique_records and matching_records
@@ -65,7 +65,7 @@ class TestFileComparison(TestCase):
         )
 
         assert file_comparison.unique_records['file_one'] == [
-            ('dduck', 'Duck', 'Donald',
+            ('dduck', 'Duck', 'Donald'
              'donald.duck@disney.com', '', 'registered', ''),
             ('mmouse1', 'Mouse', 'Minnie',
              'minnie.mouse@disney.com', '', 'registered', '')]

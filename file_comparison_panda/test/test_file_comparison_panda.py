@@ -58,32 +58,20 @@ class TestFileComparison(TestCase):
             self.test_files_path + '/old_file.csv'
         )
 
-        self.assertListEqual(
-            [
-                ('dduck', 'Duck', 'Donald',
-                 'donald.duck@disney.com', '', 'registered', ''),
-                ('mmouse1', 'Mouse', 'Minnie',
-                 'minnie.mouse@disney.com', '', 'registered', '')
-            ],
-            file_comparison.unique_records['file_one']
-        )
+        assert file_comparison.unique_records['file_one'] == [
+            ('dduck', 'Duck', 'Donald',
+             'donald.duck@disney.com', '', 'registered', ''),
+            ('mmouse1', 'Mouse', 'Minnie',
+             'minnie.mouse@disney.com', '', 'registered', '')]
 
-        self.assertListEqual(
-            [
-                ('goofy', 'Goofy', 'N/A',
-                 'goofy@disney.com', '', 'maintain', ''),
-                ('dduck', 'Duck', 'Donald',
-                 'donald.duck@disney.com', '', 'maintain', ''),
-            ],
-            file_comparison.unique_records['file_two']
-        )
+        assert file_comparison.unique_records['file_two'] == [
+            ('goofy', 'Goofy', 'N/A',
+             'goofy@disney.com', '', 'maintain', ''),
+            ('dduck', 'Duck', 'Donald',
+             'donald.duck@disney.com', '', 'maintain', '')]
 
-        self.assertListEqual(
-            [
-                ('UserId', 'Last Name', 'First Name',
-                 'Email', 'Password', 'User Type', 'Internal ID'),
-                ('mmouse', 'Mouse', 'Mickey',
-                 'mickey.mouse@disney.com', '', 'maintain', '')
-            ],
-            file_comparison.matching_records
-        )
+        assert file_comparison.matching_records == [
+            ('UserId', 'Last Name', 'First Name',
+             'Email', 'Password', 'User Type', 'Internal ID'),
+            ('mmouse', 'Mouse', 'Mickey',
+             'mickey.mouse@disney.com', '', 'maintain', '')]

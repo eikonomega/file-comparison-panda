@@ -65,7 +65,7 @@ class TestFileComparison(TestCase):
         )
 
         assert file_comparison.unique_records['file_one'] == [
-            ('dduck', 'Duck', 'Donald'
+            ('dduck', 'Duck', 'Donald',
              'donald.duck@disney.com', '', 'registered', ''),
             ('mmouse1', 'Mouse', 'Minnie',
              'minnie.mouse@disney.com', '', 'registered', '')]

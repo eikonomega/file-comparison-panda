@@ -1,4 +1,3 @@
-import stat
 import os
 from unittest import TestCase
 import pytest
@@ -49,7 +48,7 @@ class TestFileComparison(TestCase):
         """
         with pytest.raises(FileDoesNotExist):
             FileComparisonPanda(
-                self.test_files_path + '/nonexistent_file_1.usp',
+                self.test_files_path + '/nonexistent_file_1.csv',
                 self.test_files_path + '/new_file.csv')
 
     def test_compare_files(self):
@@ -59,8 +58,6 @@ class TestFileComparison(TestCase):
             self.test_files_path + '/old_file.csv'
         )
 
-        file_comparison._compare_files()
-
         self.assertListEqual(
             [
                 ('dduck', 'Duck', 'Donald',
@@ -68,7 +65,7 @@ class TestFileComparison(TestCase):
                 ('mmouse1', 'Mouse', 'Minnie',
                  'minnie.mouse@disney.com', '', 'registered', '')
             ],
-            file_comparison.unique_records()['file_one']
+            file_comparison.unique_records['file_one']
         )
 
         self.assertListEqual(
@@ -78,7 +75,7 @@ class TestFileComparison(TestCase):
                 ('dduck', 'Duck', 'Donald',
                  'donald.duck@disney.com', '', 'maintain', ''),
             ],
-            file_comparison.unique_records()['file_two']
+            file_comparison.unique_records['file_two']
         )
 
         self.assertListEqual(
@@ -88,5 +85,5 @@ class TestFileComparison(TestCase):
                 ('mmouse', 'Mouse', 'Mickey',
                  'mickey.mouse@disney.com', '', 'maintain', '')
             ],
-            file_comparison.matching_records()
+            file_comparison.matching_records
         )

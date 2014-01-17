@@ -7,6 +7,6 @@ deploy:
   provider: pypi
   user: eikonomega
   password:
-    secure: O3ykqu94SAGAPDYJsYCvtSZQ2qRmagJbgiHJUXxODRa8nU3sYRpvP8ZKjTJWzLDJFBOUO6jYL627EMzWA6+9s/hXqBBDFgFZ3qM6+3hvaIG3DdvsgEipr/tbqVdOg8BpmUL4w1vB5Qyg+YLf2tvR4z3nXp4G6mJUyYl5E3Fts5o=
+    secure: gBePd5vi/vWAWtxYY0wylxjLvzz0PeVna5fejPy6VpJuPN/DaNZmrGKGKAv7+QNLhGBOEXNMbQYv9F4PxnWJBoVP4AuSFBppZDPUhVL/irtres/ZSEQo7WbJs7Tq5e8pREaWkStFup114aufaEsz2aV9BPXOZK7jIpTTkxQdIFQ=
   on:
     repo: eikonomega/file-comparison-panda

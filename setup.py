@@ -12,8 +12,8 @@ setup(
     author="Mike Dunn",
     author_email="mike@eikonomega.com",
     url="https://github.com/eikonomega/file-comparison-panda",
-    description="ConfigurationPanda provides easy loading and access to "
-                "the data elements of JSON based configuration files.",
+    description="The file-comparison-panda library provides easy "
+                "comparisons of csv file contents."
     long_description=file_comparison_panda.__doc__,
 
     install_requires=requirements,

@@ -68,5 +68,7 @@ test_file_three.csv::
 """
 
 from file_comparison_panda import FileComparisonPanda
+from file_comparison_exceptions import (
+    FileDoesNotExist, PermissionDeniedOnFile, UnsupportedFileType)
 
-__version__ = '0.3.2'
+__version__ = '0.3.3'
